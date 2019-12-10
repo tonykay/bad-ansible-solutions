@@ -1,0 +1,41 @@
+---
+- name: Setup frontend load-balancer tier
+  hosts: frontends
+  tags:
+    - frontends
+
+  roles:
+    - common
+    - frontend-tier
+
+# Setup application servers tier
+
+- name: Setup app tier
+  hosts: apps
+  tags:
+    - apps
+
+  roles:
+    - common
+    - app-tier
+
+# Setup database tier
+
+- name: Setup database tier
+  hosts: appdbs
+  vars:
+    postgresql_databases:
+      - name: example_db
+      - awx  
+    postgresql_users:
+      - name: example_user
+        password: supersecure
+      - name: awx
+        password: supersecure
+  tags:
+    - databases
+
+  roles:
+    - common
+    - geerlingguy.postgresql
+
